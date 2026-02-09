@@ -1,13 +1,17 @@
 import os
 
-# Caminhos Absolutos
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.path.join(BASE_DIR, 'data')
-RAW_DATA_DIR = os.path.join(DATA_DIR, 'raw')
-PROCESSED_DATA_DIR = os.path.join(DATA_DIR, 'processed')
-WEIGHTS_PATH = os.path.join(BASE_DIR, 'models', 'weights', 'model_best.h5') # Exemplo Keras
 
-# Configurações do Modelo
-TARGET_WIDTH = 640   # TrackNet geralmente treina com essa resolução
-TARGET_HEIGHT = 360
-FPS_TARGET = 60      # Ideal para Tênis
+# Diretórios de Dados
+RAW_DATA_DIR = os.path.join(BASE_DIR, 'data', 'raw')
+PROCESSED_DATA_DIR = os.path.join(BASE_DIR, 'data', 'processed')
+STATS_DIR = os.path.join(BASE_DIR, 'data', 'stats')
+
+# Caminho do Modelo (O arquivo .pth deve ser baixado manualmente)
+WEIGHTS_PATH = os.path.join(BASE_DIR, 'models', 'weights', 'TrackNet_best.pth')
+
+# Garante que as pastas existam
+os.makedirs(RAW_DATA_DIR, exist_ok=True)
+os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
+os.makedirs(STATS_DIR, exist_ok=True)
+os.makedirs(os.path.dirname(WEIGHTS_PATH), exist_ok=True)

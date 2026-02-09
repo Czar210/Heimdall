@@ -1,31 +1,23 @@
 import os
-import cv2
-from src.config import RAW_DATA_DIR
 from src.ingestion import YouTubeIngester
+from src.inference import TrackNetInference
+from src.visualizer import create_video_overlay
+from src.config import RAW_DATA_DIR
 
 def main():
-    # 1. Pipeline de Ingestão
-    # Comente esta linha se já tiver os vídeos para não baixar sempre
-    downloader = YouTubeIngester(channel_url="https://www.youtube.com/@gihan84")
-    # downloader.download_latest_videos(limit=1) 
+    # 1. Download
+    downloader = YouTubeIngester("https://www.youtube.com/@gihan84")
+    # Comente a linha abaixo se não quiser baixar novos vídeos toda vez
+    downloader.download_latest_videos(limit=1) 
 
-    # 2. Pipeline de Processamento (Listar arquivos baixados)
-    video_files = [f for f in os.listdir(RAW_DATA_DIR) if f.endswith('.mp4')]
+    # 2. Setup Modelo
+    tracker = TrackNetInference()
     
-    if not video_files:
-        print("⚠️ Nenhum vídeo encontrado em data/raw.")
-        return
-
-    print(f"🔍 Encontrados {len(video_files)} vídeos para processar.")
-
-    # 3. Loop de Inferência (Placeholder para o TrackNet)
-    for video_file in video_files:
-        video_path = os.path.join(RAW_DATA_DIR, video_file)
-        print(f"🎾 Processando: {video_file} ...")
-        
-        # Aqui chamaremos a classe de inferência (que vamos criar a seguir)
-        # analyzer = TennisAnalyzer(video_path)
-        # analyzer.run()
+    # 3. Processamento em Lote
+    videos = [f for f in os.listdir(RAW_DATA_DIR) if f.endswith('.mp4')]
+    for video in videos:
+        tracker.predict_video(video)     # Gera CSV
+        create_video_overlay(video)      # Gera MP4 com bolinha
 
 if __name__ == "__main__":
     main()
